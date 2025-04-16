@@ -1,53 +1,3 @@
-
-
-
-// import React from "react";
-// import {
-//   LineChart,
-//   Line,
-//   XAxis,
-//   YAxis,
-//   CartesianGrid,
-//   Tooltip,
-//   ResponsiveContainer,
-// } from "recharts";
-
-// function ForecastPlot({ data }) {
-//   if (!data || data.length === 0) {
-//     return <div className="text-center text-gray-500">No forecast data available</div>;
-//   }
-
-//   // Format the data (optional: can format dates here if needed)
-//   const formattedData = data.map((point) => ({
-//     date: new Date(point.date).toLocaleDateString('en-GB'), // or 'en-US'
-//     value: Number(point.value),
-//   }));
-  
-
-//   return (
-//     <div className="w-full h-96 bg-white rounded-xl shadow-lg p-4">
-//       <ResponsiveContainer width="100%" height={400}>
-//         <LineChart data={formattedData}>
-//           <CartesianGrid strokeDasharray="3 3" />
-//           <XAxis dataKey="date" angle={-45} textAnchor="end" height={60} />
-//           <YAxis />
-//           <Tooltip />
-//           <Line
-//             type="monotone"
-//             dataKey="value"
-//             stroke="#2563eb"
-//             strokeWidth={2}
-//             dot={{ r: 3 }}
-//             activeDot={{ r: 6 }}
-//           />
-//         </LineChart>
-//       </ResponsiveContainer>
-//     </div>
-//   );
-// }
-
-// export default ForecastPlot;
-
 import React, { useEffect, useState } from "react";
 import {
   LineChart,
@@ -63,37 +13,38 @@ import Papa from "papaparse";
 
 function ForecastPlot({ data: forecastData }) {
   const [actualData, setActualData] = useState([]);
+
   useEffect(() => {
-    Papa.parse("/generated_time_series.csv", {
-        download: true,
-        header: false,
-        skipEmptyLines: true,
-        complete: (result) => {
-          const parsed = result.data
-            .filter((row) => row.length >= 2 && row[0] && row[1])
-            .map(([date, value]) => ({
-              date: new Date(date).toLocaleDateString("en-GB"),
-              actual: parseFloat(value),
-            }));
-          setActualData(parsed);
-        },
-        error: (err) => console.error("CSV parsing error:", err),
-      });
-      
+    // Load the actual data from the CSV file in the public folder
+    Papa.parse("/generated_time_series.csv", { // Use the correct path to the file
+      download: true,
+      header: false,
+      skipEmptyLines: true,
+      complete: (result) => {
+        const parsed = result.data
+          .filter((row) => row.length >= 2 && row[0] && row[1])
+          .map(([date, value]) => ({
+            date: new Date(date).toLocaleDateString("en-GB"),
+            actual: parseFloat(value),
+          }));
+        setActualData(parsed);
+      },
+      error: (err) => console.error("CSV parsing error:", err),
+    });
   }, []);
-  
-  console.log("Actual:", actualData)
+
+  // If there is no forecast data, show a message
   if (!forecastData || forecastData.length === 0) {
     return <div className="text-center text-gray-500">No forecast data available</div>;
   }
 
-  // Forma`t forecasted data
+  // Format the forecasted data
   const formattedForecast = forecastData.map((point) => ({
     date: new Date(point.date).toLocaleDateString("en-GB"),
     predicted: parseFloat(point.value),
   }));
 
-  // Merge actual and forecast by date
+  // Merge actual and forecast data by date
   const mergedData = [...actualData, ...formattedForecast].reduce((acc, curr) => {
     const existing = acc.find((item) => item.date === curr.date);
     if (existing) {
