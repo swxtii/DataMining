@@ -7,7 +7,7 @@ from imblearn.over_sampling import RandomOverSampler
 import joblib
 
 # Load dataset
-df = pd.read_csv("../frontend/public/generated_features.csv")
+df = pd.read_csv("../frontend/public/generated_time_series_features.csv")
 
 # Features and label
 X = df.drop("label", axis=1)
