@@ -63,33 +63,31 @@ import Papa from "papaparse";
 
 function ForecastPlot({ data: forecastData }) {
   const [actualData, setActualData] = useState([]);
-  console.log("called")
-  console.log("📊 forecastData:", forecastData);
-  console.log("📈 actualData:", actualData);
-
   useEffect(() => {
-    // Load actual data from CSV
-    Papa.parse("../tsa_dataset.csv", {
-      download: true,
-      header: false,
-      complete: (result) => {
-        const parsed = result.data
-          .filter((row) => row.length === 2)
-          .map(([date, value]) => ({
-            date: new Date(date).toLocaleDateString("en-GB"),
-            actual: parseFloat(value),
-          }));
-        setActualData(parsed);
-      },
-      error: (err) => console.error("CSV parsing error:", err),
-    });
+    Papa.parse("/generated_time_series.csv", {
+        download: true,
+        header: false,
+        skipEmptyLines: true,
+        complete: (result) => {
+          const parsed = result.data
+            .filter((row) => row.length >= 2 && row[0] && row[1])
+            .map(([date, value]) => ({
+              date: new Date(date).toLocaleDateString("en-GB"),
+              actual: parseFloat(value),
+            }));
+          setActualData(parsed);
+        },
+        error: (err) => console.error("CSV parsing error:", err),
+      });
+      
   }, []);
-
+  
+  console.log("Actual:", actualData)
   if (!forecastData || forecastData.length === 0) {
     return <div className="text-center text-gray-500">No forecast data available</div>;
   }
 
-  // Format forecasted data
+  // Forma`t forecasted data
   const formattedForecast = forecastData.map((point) => ({
     date: new Date(point.date).toLocaleDateString("en-GB"),
     predicted: parseFloat(point.value),

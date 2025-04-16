@@ -1,94 +1,3 @@
-// import React, { useState } from "react";
-// import axios from "axios";
-// import ForecastPlot from "./ForecastPlot";
-
-// function ForecastForm() {
-//   const [data, setData] = useState("");
-//   const [period, setPeriod] = useState(7);
-//   const [result, setResult] = useState(null);
-//   const [loading, setLoading] = useState(false);
-//   const [error, setError] = useState(null);
-
-//   const handleSubmit = async () => {
-//     try {
-//       setLoading(true);
-//       setError(null);
-      
-//       const formatted = data.split("\n").map((line) => {
-//         const [date, value] = line.split(",");
-//         return { date, value: parseFloat(value) };
-//       });
-      
-//       const response = await axios.post("http://localhost:8000/forecast/", {
-//         data: formatted,
-//         period,
-//       });
-      
-//       console.log("Response:", response.data);
-//       setResult(response.data);
-//     } catch (error) {
-//       console.error("Error details:", error);
-//       setError("Error submitting data: " + error.message);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   return (
-//     <div className="max-w-4xl mx-auto p-6 bg-gradient-to-r from-blue-50 to-white">
-//       <div className="bg-white p-8 rounded-lg shadow-lg space-y-6">
-//         <h1 className="text-3xl font-semibold text-center text-blue-700">Time Series Forecasting</h1>
-        
-//         <div className="space-y-4">
-//           <div className="mb-4">
-//             <label className="block text-lg font-medium text-blue-600">Enter your time series data (format: YYYY-MM-DD,value)</label>
-//             <textarea
-//               rows="8"
-//               className="w-full p-4 border rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500"
-//               onChange={(e) => setData(e.target.value)}
-//               placeholder="Enter data in format: YYYY-MM-DD,value"
-//             />
-//           </div>
-          
-//           <div className="mb-4">
-//             <label className="block text-lg font-medium text-blue-600">Forecast Period (days)</label>
-//             <input
-//               type="number"
-//               className="w-32 p-4 border rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500"
-//               value={period}
-//               onChange={(e) => setPeriod(Number(e.target.value))}
-//               min="1"
-//             />
-//           </div>
-          
-//           <button
-//             onClick={handleSubmit}
-//             disabled={loading}
-//             className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-blue-300 transition-all duration-300"
-//           >
-//             {loading ? "Processing..." : "Generate Forecast"}
-//           </button>
-          
-//           {error && (
-//             <div className="mt-4 p-4 bg-red-200 text-red-700 rounded-lg text-center">
-//               <strong>Error:</strong> {error}
-//             </div>
-//           )}
-//         </div>
-//       </div>
-
-//       {result && (
-//         <ForecastPlot 
-//           data={result.forecast} 
-//           model={result.model} 
-//           mape={result.mape} 
-//         />
-//       )}
-//     </div>
-//   );
-// }
-
-// export default ForecastForm;
 
 
 import React, { useState } from "react";
@@ -107,10 +16,14 @@ function ForecastForm() {
       setLoading(true);
       setError(null);
 
-      const formatted = data.split("\n").map((line) => {
-        const [date, value] = line.split(",");
-        return { date, value: parseFloat(value) };
-      });
+      const formatted = data
+        .split("\n")
+        .map((line) => line.trim()) // remove leading/trailing whitespace
+        .filter((line) => line && line.includes(",")) // skip empty or invalid lines
+        .map((line) => {
+            const [date, value] = line.split(",");
+            return { date: date.trim(), value: parseFloat(value) };
+        });
 
       const response = await axios.post("http://localhost:8000/forecast/", {
         data: formatted,
