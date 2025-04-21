@@ -269,38 +269,6 @@ function ForecastForm() {
   const [fromDate, setFromDate] = useState(new Date("2024-01-01"));
   const [toDate, setToDate] = useState(new Date("2024-01-31"));
 
-  // const handleSubmit = async (event) => {
-  //   event.preventDefault();
-    
-  //   if (fromDate > toDate) {
-  //     setError("From date must be before or equal to To date.");
-  //     return;
-  //   }
-    
-  //   try {
-  //     setLoading(true);
-  //     setError(null);
-
-  //     const response = await axios.post("http://localhost:8000/forecast/date-range", {
-  //       from_date: fromDate.toISOString().split('T')[0],
-  //       to_date: toDate.toISOString().split('T')[0],
-  //       period,
-  //     });
-
-  //     if (response.data.error || !response.data.forecast?.length) {
-  //       setError(response.data.error || "No forecast data received");
-  //       setResult(null);
-  //     } else {
-  //       setResult(response.data);
-  //     }
-  //   } catch (err) {
-  //     setError("API Error: " + (err.response?.data?.error || err.message));
-  //     setResult(null);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
   const handleSubmit = async () => {
     if (fromDate > toDate) {
       setError("From date must be before or equal to To date.");

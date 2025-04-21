@@ -8,6 +8,7 @@
     "@mui/material": "^7.0.2",
     "@mui/x-date-pickers": "^7.28.3",
     "@progress/kendo-react-all": "^10.1.0",
+    "@progress/kendo-react-intl": "^10.1.0",
     "@progress/kendo-theme-default": "^10.5.0",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
